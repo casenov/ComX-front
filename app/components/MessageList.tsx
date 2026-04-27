@@ -46,6 +46,12 @@ export default function MessageList({
     bottomRef.current?.scrollIntoView({ behavior: "smooth" });
   }, [messages]);
 
+  useEffect(() => {
+    const handleGlobalClick = () => setActiveMessageId(null);
+    window.addEventListener("click", handleGlobalClick);
+    return () => window.removeEventListener("click", handleGlobalClick);
+  }, []);
+
   const renderPoll = (msgId: number, poll: Poll) => {
     const totalVotes = Object.values(poll.votes).reduce((acc, v) => acc + v.length, 0);
     const userVotedFor = Object.entries(poll.votes).find(([_, v]) => v.includes(currentUserId))?.[0];
@@ -143,7 +149,15 @@ export default function MessageList({
                 className="w-12 h-12 rounded-2xl overflow-hidden border border-white/5 flex-shrink-0 bg-white/5 shadow-xl transition-transform group-hover:scale-110 cursor-pointer"
                 onClick={() => setActiveMessageId(activeMessageId === msg.id ? null : msg.id)}
               >
-                <img src={msg.avatar} alt={msg.nickname} className="w-full h-full object-cover" />
+                <img 
+                  src={msg.avatar} 
+                  alt={msg.nickname} 
+                  className="w-full h-full object-cover" 
+                  onError={(e) => {
+                    const target = e.target as HTMLImageElement;
+                    target.src = `https://api.dicebear.com/7.x/initials/svg?seed=${msg.nickname}`;
+                  }}
+                />
               </div>
             )}
 
@@ -177,7 +191,11 @@ export default function MessageList({
                       : "bg-white/5 text-white/90 border border-white/10 rounded-[24px] rounded-bl-none hover:bg-white/[0.08]"}
                     ${activeMessageId === msg.id ? "ring-2 ring-indigo-500/50" : ""}
                   `}
-                  onClick={() => setActiveMessageId(activeMessageId === msg.id ? null : msg.id)}
+                  `}
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    setActiveMessageId(activeMessageId === msg.id ? null : msg.id);
+                  }}
                 >
                   {msg.image_url && (
                     <div className="p-1.5">
@@ -200,9 +218,11 @@ export default function MessageList({
                 {/* Actions */}
                 {!isSystem && (
                   <div className={`
-                    absolute top-0 flex items-center space-x-2 transition-all duration-300 z-20
+                    absolute flex items-center space-x-2 transition-all duration-300 z-20
                     ${isMe ? "right-0 translate-x-0 md:-left-28" : "left-0 translate-x-0 md:-right-28"}
-                    ${activeMessageId === msg.id ? "opacity-100 -top-14" : "opacity-0 pointer-events-none group-hover:opacity-100 md:group-hover:-top-2 md:group-hover:pointer-events-auto"}
+                    ${activeMessageId === msg.id 
+                      ? "opacity-100 -top-14 visible pointer-events-auto" 
+                      : "opacity-0 invisible pointer-events-none group-hover:opacity-100 md:group-hover:-top-2 md:group-hover:pointer-events-auto md:group-hover:visible"}
                   `}>
                     <button 
                       onClick={() => onReply(msg)}

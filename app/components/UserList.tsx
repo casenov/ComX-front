@@ -22,7 +22,15 @@ export default function UserList({ users, currentUserId }: { users: User[]; curr
           >
             <div className="relative">
               <div className="w-8 h-8 rounded-full overflow-hidden border border-white/5">
-                <img src={u.avatar} alt={u.nickname} className="w-full h-full object-cover" />
+                <img 
+                  src={u.avatar} 
+                  alt={u.nickname} 
+                  className="w-full h-full object-cover" 
+                  onError={(e) => {
+                    const target = e.target as HTMLImageElement;
+                    target.src = `https://api.dicebear.com/7.x/initials/svg?seed=${u.nickname}`;
+                  }}
+                />
               </div>
               <div className="absolute -bottom-0.5 -right-0.5 w-2.5 h-2.5 bg-emerald-500 border-2 border-[#0a0a0c] rounded-full"></div>
             </div>

@@ -163,12 +163,23 @@ export default function Home() {
     }
   };
 
+  const handleChangeAvatar = () => {
+    const newSeed = Math.random().toString(36).substring(7);
+    const newAvatar = `https://api.dicebear.com/7.x/avataaars/svg?seed=${newSeed}`;
+    sendMessage({ type: "change_avatar", avatar: newAvatar });
+  };
+
   if (isLoading) {
     return <LoadingScreen onFinished={() => setIsLoading(false)} />;
   }
 
   return (
-    <div className="flex h-screen bg-mesh text-white/90 overflow-hidden overflow-x-hidden relative selection:bg-indigo-500/30">
+    <div 
+      className="flex h-screen bg-mesh text-white/90 overflow-hidden overflow-x-hidden relative selection:bg-indigo-500/30"
+      onClick={() => {
+        // This will be caught by stopPropagation in components if needed
+      }}
+    >
       {/* Mobile Overlay */}
       {isSidebarOpen && (
         <div 
@@ -196,15 +207,30 @@ export default function Home() {
           </div>
           
           <div className="glass-card p-6 flex flex-col items-center glow-indigo">
-            <div className="relative group cursor-pointer mb-4" onClick={handleChangeNick}>
-              <div className="w-24 h-24 rounded-2xl overflow-hidden border-2 border-indigo-500/30 p-1 group-hover:border-indigo-500/80 transition-all duration-500 rotate-3 group-hover:rotate-0">
-                <img src={user?.avatar} alt="Profile" className="w-full h-full object-cover rounded-xl" />
+            <div className="relative group cursor-pointer mb-4">
+              <div 
+                className="w-24 h-24 rounded-2xl overflow-hidden border-2 border-indigo-500/30 p-1 group-hover:border-indigo-500/80 transition-all duration-500 rotate-3 group-hover:rotate-0"
+                onClick={handleChangeNick}
+              >
+                <img 
+                  src={user?.avatar} 
+                  alt="Profile" 
+                  className="w-full h-full object-cover rounded-xl" 
+                  onError={(e) => {
+                    const target = e.target as HTMLImageElement;
+                    target.src = `https://api.dicebear.com/7.x/initials/svg?seed=${user?.nickname}`;
+                  }}
+                />
               </div>
-              <div className="absolute -bottom-2 -right-2 bg-indigo-600 rounded-lg p-1.5 shadow-lg">
+              <button 
+                onClick={handleChangeAvatar}
+                className="absolute -bottom-2 -right-2 bg-indigo-600 rounded-lg p-1.5 shadow-lg hover:bg-indigo-500 hover:scale-110 transition-all"
+                title="Change Avatar"
+              >
                 <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z" />
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" />
                 </svg>
-              </div>
+              </button>
             </div>
             <p className="font-bold text-xl text-white mb-1 truncate w-full text-center tracking-tight">{user?.nickname}</p>
             <div className="flex items-center space-x-2 opacity-40">
