@@ -40,6 +40,7 @@ export default function MessageList({
 }) {
   const bottomRef = useRef<HTMLDivElement>(null);
   const [activePicker, setActivePicker] = useState<number | null>(null);
+  const [activeMessageId, setActiveMessageId] = useState<number | null>(null);
 
   useEffect(() => {
     bottomRef.current?.scrollIntoView({ behavior: "smooth" });
@@ -138,7 +139,10 @@ export default function MessageList({
             className={`flex items-end space-x-4 animate-slide-in group ${isMe ? "flex-row-reverse space-x-reverse" : "flex-row"} ${isSystem ? "justify-center !space-x-0" : ""}`}
           >
             {!isSystem && (
-              <div className="w-12 h-12 rounded-2xl overflow-hidden border border-white/5 flex-shrink-0 bg-white/5 shadow-xl transition-transform group-hover:scale-110">
+              <div 
+                className="w-12 h-12 rounded-2xl overflow-hidden border border-white/5 flex-shrink-0 bg-white/5 shadow-xl transition-transform group-hover:scale-110 cursor-pointer"
+                onClick={() => setActiveMessageId(activeMessageId === msg.id ? null : msg.id)}
+              >
                 <img src={msg.avatar} alt={msg.nickname} className="w-full h-full object-cover" />
               </div>
             )}
@@ -171,7 +175,10 @@ export default function MessageList({
                     : isSystem 
                       ? "glass-card p-8 border-indigo-500/20 w-full max-w-lg shadow-[0_0_50px_rgba(99,102,241,0.1)]" 
                       : "bg-white/5 text-white/90 border border-white/10 rounded-[24px] rounded-bl-none hover:bg-white/[0.08]"}
-                `}>
+                    ${activeMessageId === msg.id ? "ring-2 ring-indigo-500/50" : ""}
+                  `}
+                  onClick={() => setActiveMessageId(activeMessageId === msg.id ? null : msg.id)}
+                >
                   {msg.image_url && (
                     <div className="p-1.5">
                       <img 
@@ -193,8 +200,9 @@ export default function MessageList({
                 {/* Actions */}
                 {!isSystem && (
                   <div className={`
-                    absolute top-0 flex items-center space-x-2 transition-all duration-300 opacity-0 group-hover:opacity-100 z-10
-                    ${isMe ? "-left-28" : "-right-28"}
+                    absolute top-0 flex items-center space-x-2 transition-all duration-300 z-20
+                    ${isMe ? "right-0 translate-x-0 md:-left-28" : "left-0 translate-x-0 md:-right-28"}
+                    ${activeMessageId === msg.id ? "opacity-100 -top-14" : "opacity-0 pointer-events-none group-hover:opacity-100 md:group-hover:-top-2 md:group-hover:pointer-events-auto"}
                   `}>
                     <button 
                       onClick={() => onReply(msg)}

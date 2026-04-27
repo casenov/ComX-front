@@ -168,7 +168,7 @@ export default function Home() {
   }
 
   return (
-    <div className="flex h-screen bg-mesh text-white/90 overflow-hidden relative selection:bg-indigo-500/30">
+    <div className="flex h-screen bg-mesh text-white/90 overflow-hidden overflow-x-hidden relative selection:bg-indigo-500/30">
       {/* Mobile Overlay */}
       {isSidebarOpen && (
         <div 
