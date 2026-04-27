@@ -45,8 +45,8 @@ export default function Home() {
   const [selectedImage, setSelectedImage] = useState<string | null>(null);
   const [isLoading, setIsLoading] = useState(true);
   
-  // Use 127.0.0.1 to avoid localhost issues on Windows
-  const { isConnected, sendMessage, lastMessage } = useWebSocket("ws://127.0.0.1:8000/ws");
+  // Production backend URL on Render
+  const { isConnected, sendMessage, lastMessage } = useWebSocket("wss://comx-back.onrender.com/ws");
   
   const typingTimeoutRef = useRef<NodeJS.Timeout | null>(null);
 
