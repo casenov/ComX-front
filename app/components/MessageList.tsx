@@ -191,7 +191,6 @@ export default function MessageList({
                       : "bg-white/5 text-white/90 border border-white/10 rounded-[24px] rounded-bl-none hover:bg-white/[0.08]"}
                     ${activeMessageId === msg.id ? "ring-2 ring-indigo-500/50" : ""}
                   `}
-                  `}
                   onClick={(e) => {
                     e.stopPropagation();
                     setActiveMessageId(activeMessageId === msg.id ? null : msg.id);
