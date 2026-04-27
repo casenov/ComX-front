@@ -218,11 +218,11 @@ export default function MessageList({
                 {/* Actions */}
                 {!isSystem && (
                   <div className={`
-                    absolute flex items-center space-x-2 transition-all duration-300 z-20
-                    ${isMe ? "right-0 translate-x-0 md:-left-28" : "left-0 translate-x-0 md:-right-28"}
+                    absolute flex items-center space-x-2 transition-all duration-300 z-30
+                    ${isMe ? "right-0 md:-left-28" : "right-0 md:-right-28"}
                     ${activeMessageId === msg.id 
-                      ? "opacity-100 -top-14 visible pointer-events-auto" 
-                      : "opacity-0 invisible pointer-events-none group-hover:opacity-100 md:group-hover:-top-2 md:group-hover:pointer-events-auto md:group-hover:visible"}
+                      ? "opacity-100 -top-12 visible pointer-events-auto" 
+                      : "opacity-0 invisible pointer-events-none md:group-hover:opacity-100 md:group-hover:-top-2 md:group-hover:pointer-events-auto md:group-hover:visible"}
                   `}>
                     <button 
                       onClick={() => onReply(msg)}
